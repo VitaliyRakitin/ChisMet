@@ -1,0 +1,107 @@
+\section{Система необходимых условий оптимальности}
+
+Рассмотртим задачу Лагранда в пространстве $\Omega = C^1(\Delta, \R^2)\times C(\Delta, \R)\times \R^2$:
+\[
+u(t) \in \R, \qquad
+\ol{x}^T = (x,y) \in \R^2,\qquad 
+\dot{\ol{x}}^T - (y,u) = 0, \qquad 
+\phi(t,\ol{x}(t),u(t)) = (y,u);
+\]
+Далее выпишем следующий функционалы
+\[
+B_i(\ol{x},u,t_0,t_1) = B_i(x,y,u,0,1) =  \int\limits_0^1 f_i(t,\ol{x},u)dt + \psi_i(0,\ol{x}(0),1,\ol{x}(1)), \qquad \text{где }i = 1,\dots,4.
+\]
+\[
+B_0 =  \int\limits_0^1 \frac{u^2}{1 + \alpha t^2} dt, \qquad f_0 = \frac{u^2}{1 + \alpha t^2}, \qquad
+\psi_0 = 0;
+\]
+\[
+B_1 =
+\int\limits_0^1 xdt - 1 = 0, \qquad
+f_1 = x, \qquad \psi_1 = -1;
+\]
+\[
+B_2 = x(0), \qquad f_2 = 0, \qquad \psi_2 = x(0);
+\]
+\[
+B_3 = y(0) - 1, \qquad f_3 = 0, \qquad \psi_3 = y(0) - 1 ;
+\]
+\[
+B_4 = y(1), \qquad f_4 = 0, \qquad \psi_4 = y(1);
+\]
+
+Далее выпишем функцию Лагранжа
+\[
+\mathcal{L} = \int\limits_{0}^{1} L dt + l;
+\]
+где
+\[
+\text{лагранжиан: }
+L = \sum\limits_{i=0}^{4} \lambda_i f_i(t,\ol{x},u) + \langle \ol{p}(t),\dot{\ol{x}} - \phi(t,\ol{x},u)\rangle;
+\]
+\[
+\text{терминант: }
+l = \sum\limits_{i=0}^{4} \lambda_i \psi_i(0,\ol{x}(0),1,\ol{x}(1));
+\]
+\[
+\lambda = \left(\lambda_0, \dots, \lambda_4 \right), \qquad
+\ol{p}(\cdot) = (p_x,p_y)  \in C^1(\Delta, \R^{2*})
+\]
+множетели лагранжа задачи, а так же функцию Понтрягина
+\[
+H(t,\ol{x},u,\ol{p},\lambda) = \langle \ol{p}(t), 
+\phi(t,\ol{x},u)\rangle - \sum\limits_{i=0}^{4}\lambda_i f_i(t,\ol{x},u). 
+\]
+
+А теперь выпишем функции Лагранжа и Понтрягина в явном виде:
+\begin{equation}
+L = \lambda_0 \left(\frac{u^2}{1 + \alpha t^4}\right) +\lambda_1 x+ p_x (\dot x - y)
++ p_y (\dot y - u);
+\end{equation}
+\[
+l = -\lambda_1 + \lambda_2 x(0) + \lambda_3(y(0) - 1) + \lambda_4 y(1);
+\]
+\[
+H = p_x y + p_y u - \lambda_0 \left(\frac{u^2}{1 + \alpha t^4}\right) - \lambda_1 x;
+\]
+
+Далее применим к задаче оптимального управления~(\ref{formtask}) принцип максимума Понтрягина. Необходимые условия оптимальности:
+\begin{enumerate}
+\item Уравнения Эйлера-Лагранжа (сопряжённая система уравнений, условие стационарности по $\ol{x}$):
+\begin{equation}\label{Euler}
+\begin{cases}
+\dot {p}_x = - \frac{\partial H}{\partial x} = \lambda_1;\\
+\dot {p}_y =  - \frac{\partial H}{\partial y} = -p_x.
+\end{cases}
+\end{equation}
+\item\label{optimal}
+условие оптимальности по управлению,
+\[
+u = \mathrm{arg} \mathop{\rm abs}\limits_{u \in \R} \max H(u) = \mathrm{arg} \mathop{\rm abs}\limits_{u \in \R} \max \left(p_y u - \left(\frac{\lambda_0}{1+\alpha t^4}\right)  u^2\right) = \frac{p_y \left(1+\alpha t^4\right)}{2\lambda_0}
+\]
+при $\lambda_0 \not= 0$, так как $H(u)$ "--- парабола, с ветвями, направленными вниз (т.к. $\lambda_0 \ge 0$
+"--- см.п.~\ref{notzero}), достигает максимума в вершине, при указанном значении аргумента $u$;
+\item\label{trans}
+условия трансверсальности по $\ol{x}$:
+\[
+p_x(t_k) = (-1)^k \frac{\partial l}{\partial x(t_k)}, \qquad
+p_y(t_k) = (-1)^k \frac{\partial l}{\partial y(t_k)}. \qquad
+\]
+В нашем случае $k = 0, 1$, $t_0 = 0$, $t_1 = 1$. Значит
+\[
+p_x(0) = \lambda_2,
+\qquad
+p_x(1) = 0,
+\qquad
+p_y(0) = \lambda_3,
+\qquad
+p_y(1) = - \lambda_4. 
+\] 
+\item условия стационарности по $t_k$:\\ нет, так как в задаче~(\ref{formtask}) $t_k$ "--- известные константы;
+\item условия дополняющей нежёсткости:\\ нет, так как в задаче~(\ref{formtask}) отсутствуют условия вида <<меньше или равно>>;
+\item\label{notzero}
+условие неотрицательности: $\lambda_0 \ge 0$;
+\item условие нормировки (множители Лагранжа могут быть выбраны с точностью до положительного множителя);
+\item\label{NERON}
+НЕРОН (множители Лагранжа НЕ Равны Одновременно Нулю).
+\end{enumerate}
