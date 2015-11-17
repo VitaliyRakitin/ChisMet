@@ -1,6 +1,6 @@
 \section{Система необходимых условий оптимальности}
 
-Рассмотртим задачу Лагранда в пространстве $\Omega = C^1(\Delta, \R^2)\times C(\Delta, \R)\times \R^2$:
+Рассмотртим задачу Лагранжа в пространстве $\Omega = C^1(\Delta, \R^2)\times C(\Delta, \R)\times \R^2$:
 \[
 u(t) \in \R, \qquad
 \ol{x}^T = (x,y) \in \R^2,\qquad 
@@ -12,7 +12,7 @@ u(t) \in \R, \qquad
 B_i(\ol{x},u,t_0,t_1) = B_i(x,y,u,0,1) =  \int\limits_0^1 f_i(t,\ol{x},u)dt + \psi_i(0,\ol{x}(0),1,\ol{x}(1)), \qquad \text{где }i = 1,\dots,4.
 \]
 \[
-B_0 =  \int\limits_0^1 \frac{u^2}{1 + \alpha t^2} dt, \qquad f_0 = \frac{u^2}{1 + \alpha t^2}, \qquad
+B_0 =  \int\limits_0^1 \frac{u^2}{1 + \alpha t^2x^2} dt, \qquad f_0 = \frac{u^2}{1 + \alpha t^2x^2}, \qquad
 \psi_0 = 0;
 \]
 \[
@@ -36,34 +36,30 @@ B_4 = y(1), \qquad f_4 = 0, \qquad \psi_4 = y(1);
 \]
 где
 \[
-\text{лагранжиан: }
-L = \sum\limits_{i=0}^{4} \lambda_i f_i(t,\ol{x},u) + \langle \ol{p}(t),\dot{\ol{x}} - \phi(t,\ol{x},u)\rangle;
+L = \sum\limits_{i=0}^{4} \lambda_i f_i(t,\ol{x},u) + \big\langle \ol{p}(t),\dot{\ol{x}} - \phi(t,\ol{x},u)\big\rangle
 \]
+называется лагранжианом, а 
 \[
-\text{терминант: }
-l = \sum\limits_{i=0}^{4} \lambda_i \psi_i(0,\ol{x}(0),1,\ol{x}(1));
+l = \sum\limits_{i=0}^{4} \lambda_i \psi_i\big(0,\ol{x}(0),1,\ol{x}(1)\big);
 \]
+терминантом.
 \[
 \lambda = \left(\lambda_0, \dots, \lambda_4 \right), \qquad
 \ol{p}(\cdot) = (p_x,p_y)  \in C^1(\Delta, \R^{2*})
 \]
-множетели лагранжа задачи, а так же функцию Понтрягина
+множетели лагранжа задачи, а так же функция Понтрягина
 \[
-H(t,\ol{x},u,\ol{p},\lambda) = \langle \ol{p}(t), 
-\phi(t,\ol{x},u)\rangle - \sum\limits_{i=0}^{4}\lambda_i f_i(t,\ol{x},u). 
+H(t,\ol{x},u,\ol{p},\lambda) = \big\langle \ol{p}(t), 
+\phi(t,\ol{x},u)\big\rangle - \sum\limits_{i=0}^{4}\lambda_i f_i(t,\ol{x},u). 
 \]
 
 А теперь выпишем функции Лагранжа и Понтрягина в явном виде:
-\begin{equation}
-L = \lambda_0 \left(\frac{u^2}{1 + \alpha t^4}\right) +\lambda_1 x+ p_x (\dot x - y)
-+ p_y (\dot y - u);
-\end{equation}
-\[
-l = -\lambda_1 + \lambda_2 x(0) + \lambda_3(y(0) - 1) + \lambda_4 y(1);
-\]
-\[
-H = p_x y + p_y u - \lambda_0 \left(\frac{u^2}{1 + \alpha t^4}\right) - \lambda_1 x;
-\]
+\begin{eqnarray}
+L &=&  \lambda_0 \left(\frac{u^2}{1 + \alpha t^2x^2}\right) +\lambda_1 x+ p_x (\dot x - y)
++ p_y (\dot y - u);\\
+l &=&  -\lambda_1 + \lambda_2 x(0) + \lambda_3\big(y(0) - 1\big) + \lambda_4 y(1);\\
+H &=&  p_x y + p_y u - \lambda_0 \left(\frac{u^2}{1 + \alpha t^2x^2}\right) - \lambda_1 x;
+\end{eqnarray}
 
 Далее применим к задаче оптимального управления~(\ref{formtask}) принцип максимума Понтрягина. Необходимые условия оптимальности:
 \begin{enumerate}
@@ -77,7 +73,7 @@ H = p_x y + p_y u - \lambda_0 \left(\frac{u^2}{1 + \alpha t^4}\right) - \lambda_
 \item\label{optimal}
 условие оптимальности по управлению,
 \[
-u = \mathrm{arg} \mathop{\rm abs}\limits_{u \in \R} \max H(u) = \mathrm{arg} \mathop{\rm abs}\limits_{u \in \R} \max \left(p_y u - \left(\frac{\lambda_0}{1+\alpha t^4}\right)  u^2\right) = \frac{p_y \left(1+\alpha t^4\right)}{2\lambda_0}
+u = \mathrm{arg} \mathop{\rm abs}\limits_{u \in \R} \max H(u) = \mathrm{arg} \mathop{\rm abs}\limits_{u \in \R} \max \left(p_y u - \left(\frac{\lambda_0}{1+\alpha t^2x^2}\right)  u^2\right) = \frac{p_y \left(1+\alpha t^2x^2\right)}{2\lambda_0}
 \]
 при $\lambda_0 \not= 0$, так как $H(u)$ "--- парабола, с ветвями, направленными вниз (т.к. $\lambda_0 \ge 0$
 "--- см.п.~\ref{notzero}), достигает максимума в вершине, при указанном значении аргумента $u$;

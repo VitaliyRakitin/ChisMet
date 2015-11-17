@@ -5,7 +5,7 @@
 \]
 Введём обозначение
 \[
-\phi(t) = \int\limits_{0}^{1} x(\tau) d\tau, \quad \text{а так же } \lambda_1 = a;
+\phi(t) = \int\limits_{0}^{t} x(\tau) d\tau, \quad \lambda_1 = a;
 \]
 тогда 
 \begin{equation}\label{dopeqq}
@@ -17,25 +17,18 @@
 \end{equation}
 
 Таким образом, на основе принципа максимума Понтрягина задача оптимального управления~(\ref{formtask}) сводится к~краевой задаче~(\ref{finaltask}). 
-\begin{equation}\label{finaltask}
-	\begin{cases}
-	\dot{x} = y; \\
-	\dot{y} = p_y (1 + \alpha t^4);\\ %т.к. \dot{y} = u
-	\dot{p}_x = \lambda_1 = a; \\
-	\dot{p}_y = - p_x;\\
-	\dot\phi = x;\\
-	\dot{a} = 0.
-	\end{cases}
+\begin{equation}\label{finaltask}\left\{
+\begin{aligned}
+	\dot{x} &= y,&x(0)&=0; \\
+	\dot{y} &= p_y (1 + \alpha t^2x^2),&y(0)&=1,y(1)=0;\\ %т.к. \dot{y} = u
+	\dot{p}_x &= \lambda_1 = a,&p_x(1)&=0; \\
+	\dot{p}_y &= - p_x;\\
+	\dot\phi &= x,&\phi(0)&=0,\phi(1)=1;\\
+	\dot{a} &= 0.
+\end{aligned}\right.
 \end{equation}
-\[
-	x(0) = 0, \qquad y(0) = 1, \qquad \phi(0) = 0;
-\]
-\[
- 	y(1) = 0, \qquad p_x(1) = 0. \qquad \phi(1) = 1;
-\]
+Параметр $\alpha$ принимает следующие значения
 \[ \alpha = \{0.0;\quad 0.1; \quad 1.0; \quad 10.0\}.\]
-
-Однако, $\lambda_1$ в краевой задаче
 
 \section{Аналитическое решение краевой задачи}
 Полученная краевая задача решается аналитически.

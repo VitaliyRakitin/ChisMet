@@ -2,12 +2,12 @@
 
 Рассматривается задача (номер 34) Лагранжа с фиксированным временным отрезком, без ограничений вида <<меньше или равно>>:
 
-\begin{equation}\label{task}
-\int\limits_{0}^{1} \frac{\ddot{x}^2}{1 + \alpha t^4} dt \to extr, %\qquad
-\end{equation}
-\[ 
-\int\limits_{0}^{1} xdt = 1, \qquad x(0) = \dot{x}(1) = 0,  \qquad \dot{x}(0) = 1,\qquad
-\]%\[\]
+\begin{eqnarray}\label{task}
+\int\limits_{0}^{1} \frac{\ddot{x}^2}{1 + \alpha t^2x^2} dt &\to& \extr, \\
+\int\limits_{0}^{1} xdt &=&  1\notag,\\
+\qquad x(0) = \dot{x}(1) &=&  0\notag,\\
+\dot{x}(0) &=&  1\notag,
+\end{eqnarray}
 где $\alpha$ "--- известная константа, параметр задачи.
 
 Требуется формализовать задачу как задачу оптимального управления, принципом максимума
@@ -27,9 +27,9 @@ y = \dot{x}, \qquad u = \dot{y} = \ddot{x}.
 		\dot{x} = y;\\
 		\dot{y} = u;\\
 		u \in \R;\\
-		\text{при $t = 0$: } x(0) = 0, \quad y(0) = 1;\\
-		\text{при $t = 1$: } y(1) = 0;\\
+		x(0) = 0, \quad y(0) = 1;\\
+		y(1) = 0;\\
 		\int\limits_{0}^{1} xdt = 1;\\
-		\int\limits_{0}^{1} \frac{u^2}{1 + \alpha t^4} dt \to extr.\\
+		\int\limits_{0}^{1} \frac{u^2}{1 + \alpha t^2x^2} dt \to extr.\\
 	\end{cases}
 \end{equation}
