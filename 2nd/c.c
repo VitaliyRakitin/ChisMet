@@ -14,12 +14,12 @@
 
 double f0(double t,double *x){
   t= t;
-  return t;
+  return x[1];
 }
 
 double f1(double t, double *x){
   t=t;
-  return t;
+  return -x[0];
 }
 /* Векторная алгебра
  * функция копирования проверена
@@ -88,9 +88,12 @@ double runge_step(double eps,double *h,unsigned int dim,double (*f[])(double,dou
  *   оценка ошибки через норму максимум модуля
  */
   double k[7][dim]; // числа Рунге
-  double zz[dim],zz1[dim];   // хранилище промежуточных расчётов
+  double kk[7][dim]; // числа Рунге в пол шага
+  double zz[dim],zz1[dim],zz2[dim];   // хранилище промежуточных расчётов
   double x6[dim],x7[dim]; // точки, посчитанные 6-м и 7-м методом
+  double xx[dim];// точки, в пол шага
   double err = 0; //Ошибка на шаге
+  double a[7] = {1.,a2,a3,a5,a6,a7};
   double b[7][6] = { {0,0,0,0,0,0},{b21,0,0,0,0,0},{b31,b32,0,0,0,0},{b41,b42,b43,0,0,0},{b51,b52,b53,b54,0,0},{b61,b62,b63,b64,b65,0},{b71,b72,b73,b74,b75,b76} };
   double p[2][7] = { {p1,p2,p3,p4,p5,p6,0},{pp1,pp2,pp3,pp4,pp5,pp6,pp7} };
   unsigned int i,m,j;   // счётчик для тестов
@@ -98,23 +101,43 @@ double runge_step(double eps,double *h,unsigned int dim,double (*f[])(double,dou
  
   for(m=0;m<7;m++){  // подсчёт чисел Рунге K
     vec_cpy(dim,zz,x);
-    for(j=0;j<m;j++)
-      vector_add(dim,zz,zz,vector_scalar_mult(dim,zz1,k[j],b[m][j]) );// добавить b_mj k_j 
-    vector_scalar_mult(dim,k[m],vector_function(dim,zz,f,x,t),h[0]); // km = h * f(zz)
+    vec_cpy(dim,zz2,x);
+    for(j=0;j<m;j++){
+      vector_add(dim,zz ,zz ,vector_scalar_mult(dim,zz1,k[j],b[m][j]) );// добавить b_mj k_j 
+      vector_add(dim,zz2,zz2,vector_scalar_mult(dim,zz1,k[j],b[m][j]) );// добавить b_mj k_j 
+    }
+    vector_function(dim,k[m] ,f,zz ,t+h[0]   *a[m]); // km = f0(zz)
+    vector_function(dim,kk[m],f,zz2,t+h[0]/2.*a[m]); // kkm = f(zz2)
+   
   }
-  
   // подсчёт следующей точки траектории
   // похуже
-  for(i=0,vec_cpy(dim,x6,x);i<6;i++) 
-    vector_add( dim , x6 , x6 , vector_scalar_mult(dim, zz, k[i], p[0][i]) );
-  // получше (7-й порядок)
+  for(i=0,vec_cpy(dim,x6,x),vec_cpy(dim,xx,x);i<6;i++){
+    vector_add( dim , x6 , x6 , vector_scalar_mult(dim, zz, k[i] , p[0][i]*h[0]) );
+    vector_add( dim , xx , xx , vector_scalar_mult(dim, zz, kk[i], p[0][i]*h[0]/2.) );
+  }
+
+  for(m=0;m<7;m++){  // подсчёт чисел Рунге K для второго полшага
+    vec_cpy(dim,zz,xx);
+    for(j=0;j<m;j++)
+      vector_add(dim,zz,zz,vector_scalar_mult(dim,zz1,k[j],b[m][j]) );// добавить b_mj k_j 
+    vector_function(dim,kk[m],f,zz,t+h[0]/2.+h[0]/2.*a[m]); // kkm = h/2 * f(zz)
+  }
+
+
+  for (i=0;i<6;i++)
+    vector_add( dim , xx , xx , vector_scalar_mult(dim, zz, kk[i], p[0][i] * h[0]/2.) );
+
+
+/*  // получше (7-й порядок)
   for(i=0,vec_cpy(dim,x7,x);i<7;i++) 
     vector_add( dim , x7 , x7 , vector_scalar_mult(dim, zz, k[i], p[1][i]) );
+*/
   // Вот здесь вшита норма максимум модуля
-  err = distance(dim, x6, x7, norm_max);
+  err = distance(dim, x6, xx, norm_max);
   // А тут вшита процедура выбора шага
   h[1] = h[0] * step_mult(err,eps);
-  if (err>eps) return runge_step(eps,h,dim,f,x,t);
+  if (err>eps) { h[0]=h[1]; return runge_step(eps,h,dim,f,x,t);}
   // Тут уже происходят страшные вещи, меняются входные иксы
   vec_cpy(dim,x,x6);
   return err;
@@ -128,10 +151,11 @@ int main(int argc,char**argv){
   if (argc<5) {printf("%s eps x0 y0 T\n",argv[0]); return -1;}
   x[0] = atof(argv[2]); x[1] = atof(argv[3]);
   eps= atof(argv[1]); T = atof(argv[4]);
-  for(t=0; t<T && x[0]>-1; t+=h[0]){
-    h[0] = h[1];
-    printf("err = %e\t",runge_step(eps,h,2,f,x,t));
-    printf("%f %f %f %f\n",t,x[0],x[1],t*t/2.);
+  for(t=0; t<T && x[0]>0; t+=h[0]){
+    h[0] = h[1];/*
+    printf("err = %e\t", */runge_step(eps,h,2,f,x,t);/*);
+    printf("%e %e %e %e\n",t+h[0],x[0],x[1],cos(t));*/
   }
+  printf("%f\n",t-h[0]);
   return 0;
 }
