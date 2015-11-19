@@ -150,7 +150,7 @@ double runge_step(double eps,double *h,unsigned int dim,double (*f[])(double,dou
 }
 
 int osc_while(double *x,double t){
-  return (t<M_PI_2) && (t<3);
+  return  (t<40);
 }
 
 double harmonic_oscillator(double eps,double x0,double dx0,int(*condition)(double*,double)){
@@ -160,7 +160,7 @@ double harmonic_oscillator(double eps,double x0,double dx0,int(*condition)(doubl
     h[0] = h[1];
     err+=runge_step(eps,h,2,f,x,t,1,pts,step_mult);
   }
-  printf("\tt\t\tx\t\tdx\tglobal_error\t%.0fcos t + %.0fsin t\n%e\t%e\t%e\t%e\t%e\n",x0,dx0,t,x[0],x[1],err,x0*cos(t) + dx0*sin(t));
+  printf("\tt\t\tx\t\tdx\tglobal_error\t|%.0fcos t %s %.0fsin t - x|\n%e\t%e\t%e\t%e\t%e\n",x0,(dx0>0?"+":""),dx0,t,x[0],x[1],err,fabs(x0*cos(t) + dx0*sin(t)-x[0]));
   return err;
 }
 

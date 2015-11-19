@@ -41,17 +41,26 @@
 \[
   y = -\frac a6(t-1)^3 + bt + c;
 \]
-Причем $y(1)=0$, отсюда $c = -b$. Далее $y(0)=1$ даёт $a + 6b = -6$.
+Причем $y(1)=0$, отсюда $c = -b$. Далее $y(0)=1$ даёт $a - 6b = 6$.
 \[
-  x(t) = -\frac a{24}(t-1)^4 + \frac b2 t^2 - bt;\quad
-  \phi(t) = -\frac a{120}(t-1)^5 + \frac b6 t^3 - \frac b2 t^2.
+  x(t) = -\frac a{24}(t-1)^4 + \frac b2 t^2 - bt + \frac a{24};\quad
+  \phi(t) = -\frac a{120}(t-1)^5 + \frac b6 t^3 - \frac b2 t^2 + \frac a{24}t + \frac a{120}.
 \]
-Условие $\phi(1)=1$ даёт $b= -3$, $a= -6 - 6b = -6(b+1) = -6 \cdot (-2) = 12$.
-\begin{eqnarray*}
-  \phi(t) &=&  -\frac{(t-1)^5}{10}  - \frac12 t^3 + \frac32 t^2;\\
-  x(t)    &=& -\frac{(t-1)^4}2 - \frac32 t^2 + 3 t;\\
-  y(t) &=& -\frac32(t-1)^3 - 3 t + 3;\\
-  p_y(t) &=& -\frac92(t-1)^2 - 3;\\
-  p_x(t) &=& -9(t-1);\\
-  a &=&  -9;
-\end{eqnarray*}<++>
+Условие $\phi(1)=1$ даёт 
+\[
+  -\frac b3 + \frac a{24} + \frac a{120} = 1\iff -\frac b3 + \frac a{20} = 1.
+\]
+Таким образом
+\[
+  -\frac b3 + \frac{3+3b}{10} = 1\iff  -b + 9 = 30 \iff b = -21, a = -120.
+\]
+\[\left\{
+\begin{aligned}
+  \phi(t) &=  (t-1)^5  - \frac72 t^3 + \frac{21}2 t^2 - 5 t -1,	& \phi(0)=0, \phi(1)=1;\\
+  x(t)    &=  \frac{(t-1)^4}2 - \frac32 t^2 + 3 t,		& x(0)=0;\\
+  y(t) &= 2(t-1)^3 - 3 t + 3,					& y(0)=1, y(1)=0;\\
+  p_y(t) &= 6(t-1)^2 - 3;\\
+  p_x(t) &= -12(t-1),						& p_x(1)=0;\\
+  a &=  -12;
+\end{aligned}\right.
+\]
