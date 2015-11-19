@@ -12,6 +12,8 @@
  * Для большей универсальности размерность векторного поля остаётся плавающей
  * */
 
+#define alpha 0.1
+
 double f0(double t,double *x){
   t= t;
   return x[1];
@@ -21,6 +23,26 @@ double f1(double t, double *x){
   t=t;
   return -x[0];
 }
+
+// Векторное поле для задачи 34
+double dphi(double t,double *x){  t=t;  	  return  x[1];}
+double   dx(double t,double *x){  t=t;  	  return  x[2];}
+double   dy(double t,double *x){  t=t;  	  return  x[3]*(1 + alpha * t*t*x[1]*x[1]);}
+double  dpy(double t,double *x){  t=t; 		  return -x[4];}
+double  dpx(double t,double *x){  t=t;  	  return  x[5];}
+double   da(double t,double *x){  t=t; x[0]=x[0]; return  0.;}
+
+/*
+ * Близко ли чисто t+h[0] к одному из pts[] (справа) и к какому
+ * возвращает -1, если не к какому, номер точки иначе
+ * */
+int whose_close(double h,double t,unsigned int ptsc,double *pts){
+  unsigned int i;
+  for (i=0;i<ptsc;i++) if (t < pts[i] && t+h > pts[i]) return i;
+  return -1;
+}
+
+
 /* Векторная алгебра
  * функция копирования проверена
  */
@@ -77,19 +99,20 @@ double distance(unsigned int dim,double *x1,double *x2,double (*norm)(unsigned i
 double step_mult(double err,double eps){
   return fmin(2,fmax(0.3,0.9*pow(eps/err,1./7.) ) );
 }
+double no_grows(double err,double eps){
+  return fmin(1,fmax(0.3,0.9*pow(eps/err,1./7.) ) );
+}
 
-double runge_step(double eps,double *h,unsigned int dim,double (*f[])(double,double*),double*x,double t){
+double runge_step(double eps,double *h,unsigned int dim,double (*f[])(double,double*),double*x,double t,int ptsc,double *pts,double(*s_m)(double,double)){
 /* Один шаг метода Рунге--Кутты
  * включая корректировку шага
  * в массив h сохраняется информация о шагах
  * h[0] сделанный шаг, h[1] рекомендация следующего
  * Сюда намертво вшиты:
  *   Метод Дормана—Принса 6-го порядка, 
- *   оценка ошибки через норму максимум модуля
  */
   double k[7][dim]; // числа Рунге
-  double kk[7][dim]; // числа Рунге в пол шага
-  double zz[dim],zz1[dim],zz2[dim];   // хранилище промежуточных расчётов
+  double zz[dim],zz1[dim];   // хранилище промежуточных расчётов
   double x6[dim],x7[dim]; // точки, посчитанные 6-м и 7-м методом
   double err = 0; //Ошибка на шаге
   double a[7] = {1.,a2,a3,a5,a6,a7};
@@ -114,25 +137,41 @@ double runge_step(double eps,double *h,unsigned int dim,double (*f[])(double,dou
   // Вот здесь вшита норма максимум модуля
   err = distance(dim, x6, x7, norm_max);
   // А тут вшита процедура выбора шага
-  h[1] = h[0] * step_mult(err,eps);
-  if (err>eps) { h[0]=h[1]; return runge_step(eps,h,dim,f,x,t);}
+  h[1] = h[0] * s_m(err,eps);
+  if (err>eps) { h[0]=h[1]; return runge_step(eps,h,dim,f,x,t,ptsc,pts,s_m);}
+  if( (i = 1 + whose_close(h[0],t,ptsc,pts))>0 ){
+    printf("Точка\n");
+    h[0] = pts[i-1]-t;
+    return runge_step(eps,h,dim,f,x,t,0,NULL,no_grows);
+  }
   // Тут уже происходят страшные вещи, меняются входные иксы
   vec_cpy(dim,x,x6);
   return err;
 }
 
+int osc_while(double *x,double t){
+  return (t<M_PI_2) && (t<3);
+}
+
+double harmonic_oscillator(double eps,double x0,double dx0,int(*condition)(double*,double)){
+  double (*f[2]) (double,double*) = {f0,f1};
+  double h[2]={0.0001,0.0001}, t=0 , x[2]={x0,dx0}, err=0, pts[1]={M_PI_2};
+  for (t=0; condition( x,t); t+=h[0] ){
+    h[0] = h[1];
+    err+=runge_step(eps,h,2,f,x,t,1,pts,step_mult);
+  }
+  printf("\tt\t\tx\t\tdx\tglobal_error\t%.0fcos t + %.0fsin t\n%e\t%e\t%e\t%e\t%e\n",x0,dx0,t,x[0],x[1],err,x0*cos(t) + dx0*sin(t));
+  return err;
+}
 
 int main(int argc,char**argv){
-  double (*f[2]) (double,double*) = {f0,f1};
-  double h[2]={0.0001,0.0001};
-  double t=0 , T , x[2] , eps;
+  /*double x[6] = {0,0,1,23,23,23};
+  int i;*/
   if (argc<5) {printf("%s eps x0 y0 T\n",argv[0]); return -1;}
-  x[0] = atof(argv[2]); x[1] = atof(argv[3]);
-  eps= atof(argv[1]); T = atof(argv[4]);
-  for(t=0; t<T && x[0]>-0.01; t+=h[0]){
-    h[0] = h[1];
-    runge_step(eps,h,2,f,x,t);
-  }
-  printf("%f\n",t-h[0]);
+  double e1 = harmonic_oscillator(atof(argv[1]),atof(argv[2]),atof(argv[3]),osc_while);
+  double e2 = harmonic_oscillator(atof(argv[1])/100.,atof(argv[2]),atof(argv[3]),osc_while);
+  double e3 = harmonic_oscillator(atof(argv[1])/10000.,atof(argv[2]),atof(argv[3]),osc_while);
+  printf("%e\n",fabs((e1-e2)/(e2-e3)));
+  
   return 0;
 }
