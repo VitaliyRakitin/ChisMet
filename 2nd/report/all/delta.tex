@@ -1,0 +1,50 @@
+\section{Оценка погрешности}
+Погрешность на одном шаге вычисляется с помощью вычисления следущей точки траектории двумя способами. $x_k,\hat x_k$ вычисляются методом Дормана"--~Принса 5(4). Локальная погрешность на шаге
+\[
+  \err_{k} = \|x_k-\hat x_k\|,\quad
+  \|y\| = \max\{|y_1|,\dots,|y_n|\}.
+\]
+Глобальная погрешность $\delta_k$ вычисляется по следущей схеме
+\[
+  \delta_0 = 0;\quad
+  \delta_{k+1} = \err_k + \delta_k \exp\left\{ \int\limits_{t_k}^{t_{k+1}} \mu(s)\,ds \right\},
+\]
+где $\mu(s)$ "--- максимальный модуль собственного значения матрицы $\frac12\left( J+J^T \right)$.
+
+Матрица $J$ Якоби системы \ref{finaltask} имеет вид
+\[
+  J = \begin{pmatrix}
+  0 & 1 & 0 & 0 & 0 & 0\\
+  0 & 0 & 1 & 0 & 0 & 0\\
+  0 & 2p_y\alpha t^2 x & 0 & (1+ \alpha t^2 x^2) & 0 & 0\\
+  0 & 0 & 0 & 0 & -1& 0\\
+  0 & 0 & 0 & 0 & 0 & 1\\
+  0 & 0 & 0 & 0 & 0 & 0
+\end{pmatrix};\quad
+  \frac{J+J^T}2 = \begin{pmatrix}
+  0 	  & \frac12 	& 0 		& 0 & 0 	& 0	\\
+  \frac12 & 0 		& \frac12 + B 	& 0 & 0 	& 0	\\
+  0 	  & \frac12 + B & 0 		& A & 0 	& 0	\\
+  0 	  & 0 		& A 		& 0 & -\frac12	& 0	\\
+  0 	  & 0 		& 0 		& 0 & 0 	&\frac12\\
+  0 	  & 0 		& 0 		& 0 & \frac12	&	 0
+\end{pmatrix},
+\]
+где $A = \frac{1+\alpha t^2 x^2}2\ge \frac12$, $B = p_y \alpha t^2 x$. Собственные числа $\lambda$ матрицы $\frac12(J+J^T)$ находятся из уравнения
+\[
+  z^3 - \kappa z^2 + \left( \frac\kappa2 - \frac14 \right)z - \left( \frac A4 \right)^2 = 0;\quad
+  z = \lambda^2,\quad \kappa = B^2 + B + 1 + A^2 = A^2 + \left( B+\frac12 \right)^2 + \frac34\ge\frac34.
+\]
+
+По теореме Руше если на границе круга $B(0,R)$ на комплексной плоскости $\C$ с центром в точке $0$ и радиусом $R$ имеет место неравенство для двух голоморфных функций $f$ и $g$ следующего вида
+\[
+  |g(z)|\big|_{|z| = R}\le |f(z)|\big|_{|z|=R},
+\]
+то количество нулей с учётом кратности суммы $f+g$ в круге $B(0,R)$ совпадает с количеством нулей $f(z)$ в этом же круге $B(0,R)$.
+
+Возьмём в качестве $f(z) = z^3$ и $g(z) = -\kappa z^2 + \left( \frac\kappa2 - \frac14 \right)z - \left( \frac A4 \right)^2$. Найдём $R>0\colon |f|\ge |g|$ при $|z| = R$.
+
+Положим $R =max\left\{ 3\kappa,\sqrt{\frac{3\kappa}2 - \frac34},\sqrt[3]{\frac{3A^2}{16}} \right\}$. Тогда
+\[
+  \big|g(z)\big|\bigg|_{|z| = R}\le \kappa R^2 + \left( \frac\kappa2 - \frac14 \right) R + \left( \frac A4 \right)^2\le \frac{R^3}3 + \frac{R^3}3 + \frac{R^3}3 = R^3 .
+\]
